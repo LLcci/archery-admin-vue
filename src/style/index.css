@@ -1,0 +1,4 @@
+:root {
+  --el-disabled-bg-color: var(--el-color-white);
+  --el-disabled-text-color: var(--el-text-color-regular);
+}

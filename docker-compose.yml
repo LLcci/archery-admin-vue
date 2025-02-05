@@ -1,0 +1,12 @@
+version: '3.7'
+name: archery-admin-web
+services:
+  archery-admin-web:
+    container_name: archery-admin-web
+    restart: always
+    build: ./
+    environment:
+      - TZ=Asia/Shanghai
+    ports:
+      - 80:80
+      - 81:81
