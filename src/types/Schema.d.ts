@@ -48,34 +48,6 @@ export interface paths {
     /** 训练统计-图表 */
     get: operations['ScoringController_getStatisticsChartsByStudent']
   }
-  '/admin/archery/timer/page': {
-    /** 分页定时器房间列表 */
-    post: operations['TimerController_getTimerPageList']
-  }
-  '/admin/archery/timer/save': {
-    /** 保存定时器 */
-    post: operations['TimerController_saveTimer']
-  }
-  '/admin/archery/timer/id': {
-    /** 根据id获取定时器 */
-    get: operations['TimerController_getTimerById']
-  }
-  '/admin/archery/timer/delete': {
-    /** id删除定时器 */
-    post: operations['TimerController_deleteTimerById']
-  }
-  '/admin/archery/timer/user': {
-    /** 获取用户创建或参与的定时器 */
-    get: operations['TimerController_getTimerByUser']
-  }
-  '/admin/archery/timer/join': {
-    /** 加入定时器 */
-    get: operations['TimerController_joinTimerByUser']
-  }
-  '/admin/archery/timer/start': {
-    /** 根据id开始定时器 */
-    get: operations['TimerController_startTimer']
-  }
   '/admin/archery/note/page': {
     /** 分页训练笔记列表 */
     post: operations['NoteController_getNotePageList']
@@ -239,10 +211,6 @@ export interface paths {
   '/admin/sys/logout': {
     /** 登出 */
     get: operations['LogoutController_logout']
-  }
-  '/admin/sys/online/list': {
-    /** 分页在线用户列表 */
-    post: operations['OnlineController_getOnlineUserList']
   }
   '/admin/sys/upload/img': {
     /** 上传图片 */
@@ -486,9 +454,9 @@ export interface components {
       /** @description 角色列表 */
       roles: readonly components['schemas']['RoleEntity'][]
       /** @description 教练 */
-      trainer: components['schemas']['UserEntity']
+      trainer?: components['schemas']['UserEntity']
       /** @description 学生列表 */
-      students: readonly components['schemas']['UserEntity'][]
+      students?: readonly components['schemas']['UserEntity'][]
     }
     /** @enum {string} */
     弓类型: '反曲弓' | '复合弓' | '光弓' | '传统弓'
@@ -765,118 +733,6 @@ export interface components {
       /** @description 分布M列表 */
       mList: number[]
     }
-    /** @enum {string} */
-    房间状态: '0' | '1' | '2'
-    TimerEntity: {
-      /** @description id,新增时不需要传,更新时需要传 */
-      id?: string
-      /**
-       * @description 是否启用:0-停用,1-启用
-       * @enum {string}
-       */
-      status?: '0' | '1'
-      /** Format: date-time */
-      createTime?: string
-      /** Format: date-time */
-      updateTime?: string
-      /** @description 创建用户 */
-      createUser?: components['schemas']['UserEntity']
-      /** @description 更新用户 */
-      updateUser?: components['schemas']['UserEntity']
-      /** Format: date-time */
-      deleteTime?: string
-      /**
-       * @description 0-准备，1-已开始，2-结束
-       * @default 0
-       */
-      state: components['schemas']['房间状态']
-      /** @description 进入房间的用户 */
-      users: readonly components['schemas']['UserEntity'][]
-      /** @description 阶段列表 */
-      roundList: string[]
-      /** @description 射箭列表，同组之间以','分割 */
-      shootList: string[]
-      /** @description 倒计时列表 */
-      timerList: number[]
-    }
-    TimerPageListDto: {
-      /**
-       * @description 当前页码
-       * @default 1
-       */
-      currentPage?: number
-      /**
-       * @description 页大小
-       * @default 10
-       */
-      pageSize?: number
-      /** @description 0-准备，1-已开始，2-结束 */
-      state?: components['schemas']['房间状态']
-      /**
-       * @description 是否启用:0-停用,1-启用
-       * @default 1
-       * @enum {string}
-       */
-      status?: '0' | '1'
-    }
-    TimerSaveDto: {
-      /** @description id,新增时不需要传,更新时需要传 */
-      id?: string
-      /**
-       * @description 是否启用:0-停用,1-启用
-       * @enum {string}
-       */
-      status?: '0' | '1'
-      /** Format: date-time */
-      createTime?: string
-      /** Format: date-time */
-      updateTime?: string
-      /** @description 创建用户 */
-      createUser?: components['schemas']['UserEntity']
-      /** @description 更新用户 */
-      updateUser?: components['schemas']['UserEntity']
-      /** Format: date-time */
-      deleteTime?: string
-      /** @description 阶段列表 */
-      roundList: string[]
-      /** @description 射箭列表，同组之间以','分割 */
-      shootList: string[]
-      /** @description 倒计时列表 */
-      timerList: number[]
-    }
-    TimerSchemaClass: {
-      /** @description id,新增时不需要传,更新时需要传 */
-      id?: string
-      /**
-       * @description 0-准备，1-已开始，2-结束
-       * @default 0
-       */
-      state: components['schemas']['房间状态']
-      /** @description 阶段列表 */
-      roundList: string[]
-      /** @description 射箭列表，同组之间以','分割 */
-      shootList: string[]
-      /** @description 倒计时列表 */
-      timerList: number[]
-      /**
-       * @description 定时器状态:0-运行，1-暂停
-       * @enum {number}
-       */
-      timerState: 0 | 1
-      /** @description 当前房间射箭人员id列表 */
-      usrIds: string[]
-      /** @description 当前索引 */
-      currentIndex: number
-      /**
-       * Format: date-time
-       * @description 当前阶段开始时间
-       */
-      currentRoundStartTime: string
-      /** @description 当前阶段剩余时间 */
-      currentRoundRemainingTime: number
-      /** @description 消息队列id列表 */
-      mqIdList: string[]
-    }
     NoteEntity: {
       /** @description id,新增时不需要传,更新时需要传 */
       id?: string
@@ -1004,7 +860,9 @@ export interface components {
       mchid: string
       /** @description 用户openid */
       openid: string
-      /** @description 微信商户订单id */
+      /** @description out_trade_no */
+      outTradeNo: string
+      /** @description transaction_id */
       transactionId: string
       /**
        * @description 商品名称
@@ -1042,6 +900,12 @@ export interface components {
       pageSize?: number
       /** @description 用户id */
       createUserId?: string
+      /** @description out_trade_no */
+      outTradeNo?: string
+      /** @description transaction_id */
+      transactionId?: string
+      /** @description 支付状态 */
+      state?: number
       /** @description 支付日期 */
       payDate?: string[]
     }
@@ -1054,7 +918,20 @@ export interface components {
       /** @description 用户openid */
       openid: string
     }
-    TransactionsJsapiResDto: Record<string, never>
+    TransactionsJsapiResDto: {
+      /** @description appId */
+      appId: string
+      /** @description timeStamp */
+      timeStamp: string
+      /** @description nonceStr */
+      nonceStr: string
+      /** @description package */
+      package: string
+      /** @description signType */
+      signType: string
+      /** @description paySign */
+      paySign: string
+    }
     UserPageListDto: {
       /**
        * @description 当前页码
@@ -1227,7 +1104,7 @@ export interface components {
       /** @description 是否是教练 */
       isTrainer?: boolean
       /** @description 学生列表 */
-      students: readonly components['schemas']['UserEntity'][]
+      students?: readonly components['schemas']['UserEntity'][]
       /** @description 角色ids */
       roleIds?: string[]
       /** @description 教练id */
@@ -1395,36 +1272,6 @@ export interface components {
       newPassword: string
       /** @description 确认新密码 */
       confirmPassword: string
-    }
-    OnlineUserDto: {
-      /** @description id,新增时不需要传,更新时需要传 */
-      id?: string
-      /** @description 用户账户,查询时非必传,新增更新时必传 */
-      username?: string
-      /** @description 用户名,查询时非必传,新增更新时必传 */
-      realname?: string
-      /** @description 头像 */
-      avatar?: string
-      /** @description 登录时间 */
-      loginDate: string
-      /** @description ip地址 */
-      address: string
-    }
-    OnlineUserPageListDto: {
-      /**
-       * @description 当前页码
-       * @default 1
-       */
-      currentPage?: number
-      /**
-       * @description 页大小
-       * @default 10
-       */
-      pageSize?: number
-      /** @description 用户账户,查询时非必传,新增更新时必传 */
-      username?: string
-      /** @description 用户名,查询时非必传,新增更新时必传 */
-      realname?: string
     }
     UploadDto: {
       /** Format: binary */
@@ -1908,145 +1755,6 @@ export interface operations {
       200: {
         content: {
           'application/json': components['schemas']['ScoringStatisticsChartsByStudentDto']
-        }
-      }
-    }
-  }
-  /** 分页定时器房间列表 */
-  TimerController_getTimerPageList: {
-    parameters: {
-      header?: {
-        /** @description Bearer token */
-        Authorization?: string
-      }
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['TimerPageListDto']
-      }
-    }
-    responses: {
-      200: {
-        content: {
-          'application/json': components['schemas']['PageResultDto'] & {
-            records: components['schemas']['TimerEntity'][]
-          }
-        }
-      }
-    }
-  }
-  /** 保存定时器 */
-  TimerController_saveTimer: {
-    parameters: {
-      header?: {
-        /** @description Bearer token */
-        Authorization?: string
-      }
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['TimerSaveDto']
-      }
-    }
-    responses: {
-      /** @description 定时器 */
-      200: {
-        content: {
-          'application/json': components['schemas']['TimerEntity']
-        }
-      }
-    }
-  }
-  /** 根据id获取定时器 */
-  TimerController_getTimerById: {
-    parameters: {
-      query: {
-        id: string
-      }
-      header?: {
-        /** @description Bearer token */
-        Authorization?: string
-      }
-    }
-    responses: {
-      /** @description 根据id获取定时器 */
-      200: {
-        content: {
-          'application/json': components['schemas']['TimerEntity']
-        }
-      }
-    }
-  }
-  /** id删除定时器 */
-  TimerController_deleteTimerById: {
-    parameters: {
-      header?: {
-        /** @description Bearer token */
-        Authorization?: string
-      }
-    }
-    responses: {
-      /** @description id删除定时器 */
-      200: {
-        content: {
-          'application/json': components['schemas']['DeleteResult']
-        }
-      }
-    }
-  }
-  /** 获取用户创建或参与的定时器 */
-  TimerController_getTimerByUser: {
-    parameters: {
-      header?: {
-        /** @description Bearer token */
-        Authorization?: string
-      }
-    }
-    responses: {
-      /** @description 获取用户创建或参与的定时器 */
-      200: {
-        content: {
-          'application/json': components['schemas']['TimerEntity']
-        }
-      }
-    }
-  }
-  /** 加入定时器 */
-  TimerController_joinTimerByUser: {
-    parameters: {
-      query: {
-        id: string
-      }
-      header?: {
-        /** @description Bearer token */
-        Authorization?: string
-      }
-    }
-    responses: {
-      /** @description 加入定时器 */
-      200: {
-        content: {
-          'application/json': components['schemas']['TimerEntity']
-        }
-      }
-    }
-  }
-  /** 根据id开始定时器 */
-  TimerController_startTimer: {
-    parameters: {
-      query: {
-        id: string
-      }
-      header?: {
-        /** @description Bearer token */
-        Authorization?: string
-      }
-    }
-    responses: {
-      /** @description 定时器 */
-      200: {
-        content: {
-          'application/json': components['schemas']['TimerSchemaClass']
         }
       }
     }
@@ -2854,29 +2562,6 @@ export interface operations {
       /** @description 登出 */
       200: {
         content: never
-      }
-    }
-  }
-  /** 分页在线用户列表 */
-  OnlineController_getOnlineUserList: {
-    parameters: {
-      header?: {
-        /** @description Bearer token */
-        Authorization?: string
-      }
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['OnlineUserPageListDto']
-      }
-    }
-    responses: {
-      200: {
-        content: {
-          'application/json': components['schemas']['PageResultDto'] & {
-            records: components['schemas']['OnlineUserDto'][]
-          }
-        }
       }
     }
   }
