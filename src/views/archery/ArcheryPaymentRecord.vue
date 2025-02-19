@@ -41,7 +41,8 @@ const editFormModel = ref<
   price: 0,
   oldMemberDate: '',
   newMemberDate: '',
-  state: 0
+  state: 0,
+  outTradeNo: ''
 })
 
 const shortcuts = [
@@ -95,9 +96,36 @@ const tableForm = ref<
     table: {
       label: 'transactionId'
     },
+    searchForm: {
+      props: {
+        label: 'transactionId'
+      },
+      component: h(ElInput, {
+        placeholder: '请输入transactionId'
+      })
+    },
     editForm: {
       props: {
         label: 'transactionId'
+      },
+      component: h(ElInput)
+    }
+  },
+  outTradeNo: {
+    table: {
+      label: 'outTradeNo'
+    },
+    searchForm: {
+      props: {
+        label: 'outTradeNo'
+      },
+      component: h(ElInput, {
+        placeholder: '请输入outTradeNo'
+      })
+    },
+    editForm: {
+      props: {
+        label: 'outTradeNo'
       },
       component: h(ElInput)
     }
