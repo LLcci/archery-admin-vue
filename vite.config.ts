@@ -11,6 +11,7 @@ import { viteCommonjs } from '@originjs/vite-plugin-commonjs'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: '/archery-admin-vue/',
   plugins: [
     vue({ script: { defineModel: true } }),
     viteCommonjs(),
