@@ -207,7 +207,7 @@ const tableForm = ref<
     table: {
       label: '支付状态',
       formatter(row, column, cellValue, index) {
-        return row.state === 1 ? '已支付' : '未支付'
+        return row.state === '1' ? '已支付' : '未支付'
       }
     },
     searchForm: {
@@ -217,8 +217,8 @@ const tableForm = ref<
       component: h(ElSelectV2, {
         placeholder: '请选择支付状态',
         options: [
-          { value: 1, label: '已支付' },
-          { value: 0, label: '未支付' }
+          { value: '1', label: '已支付' },
+          { value: '0', label: '未支付' }
         ],
         filterable: true,
         clearable: true
