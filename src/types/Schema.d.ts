@@ -136,6 +136,10 @@ export interface paths {
     /** id删除用户 */
     post: operations['UserController_deleteUserById']
   }
+  '/admin/sys/user/update/trainer': {
+    /** 更新用户教练 */
+    post: operations['UserController_updateTrainer']
+  }
   '/admin/sys/login': {
     /** 登录 */
     post: operations['LoginController_login']
@@ -836,8 +840,8 @@ export interface components {
     }
     /** @enum {string} */
     商品名称: '月会员' | '年会员'
-    /** @enum {number} */
-    支付状态: 0 | 1
+    /** @enum {string} */
+    支付状态: '0' | '1'
     PaymentRecordEntity: {
       /** @description id,新增时不需要传,更新时需要传 */
       id?: string
@@ -905,7 +909,7 @@ export interface components {
       /** @description transaction_id */
       transactionId?: string
       /** @description 支付状态 */
-      state?: number
+      state?: string
       /** @description 支付日期 */
       payDate?: string[]
     }
@@ -1107,6 +1111,12 @@ export interface components {
       students?: readonly components['schemas']['UserEntity'][]
       /** @description 角色ids */
       roleIds?: string[]
+      /** @description 教练id */
+      trainerId?: string
+    }
+    UpdateTrainerDto: {
+      /** @description id,新增时不需要传,更新时需要传 */
+      id?: string
       /** @description 教练id */
       trainerId?: string
     }
@@ -2196,6 +2206,25 @@ export interface operations {
         content: {
           'application/json': components['schemas']['DeleteResult']
         }
+      }
+    }
+  }
+  /** 更新用户教练 */
+  UserController_updateTrainer: {
+    parameters: {
+      header?: {
+        /** @description Bearer token */
+        Authorization?: string
+      }
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateTrainerDto']
+      }
+    }
+    responses: {
+      201: {
+        content: never
       }
     }
   }

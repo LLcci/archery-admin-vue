@@ -33,6 +33,14 @@
         @click="handlePsw(scope.row)"
         >修改密码</el-button
       >
+      <el-button
+        type="primary"
+        v-permissions="`/admin/sys/user/update/trainer`"
+        text
+        size="default"
+        @click="handleTrainer(scope.row)"
+        >设置教练</el-button
+      >
       <el-popconfirm title="确定删除？" @confirm="schemaTableFormRef?.handleDelete(scope.row)">
         <template #reference>
           <el-button v-permissions="api.delete" type="danger" text size="default">删除</el-button>
@@ -75,6 +83,28 @@
       <span class="dialog-footer">
         <el-button :loading="infoConfirmLoading" @click="infoDialogShow = false">取消</el-button>
         <el-button :loading="infoConfirmLoading" type="primary" @click="confirmUpdateInfo"
+          >确定</el-button
+        >
+      </span>
+    </template>
+  </el-dialog>
+  <el-dialog
+    v-model="trainerDialogShow"
+    :fullscreen="['xs', 'sm', 'md'].includes(useSystem().breakpoints)"
+    :title="`${trainerUser}：修改信息`"
+  >
+    <schemaForm
+      v-loading="trainerConfirmLoading"
+      ref="trainerFormRef"
+      v-model="trainerModel"
+      :form="trainerForm"
+    ></schemaForm>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button :loading="trainerConfirmLoading" @click="trainerDialogShow = false"
+          >取消</el-button
+        >
+        <el-button :loading="trainerConfirmLoading" type="primary" @click="confirmTrainer"
           >确定</el-button
         >
       </span>
@@ -143,7 +173,7 @@ const editFormModel = ref<
 
 const tableProps = ref<SchemaTableFormInstance['$props']['tableProps']>({
   props: { showOverflowTooltip: true },
-  actionProps: { width: 400 }
+  actionProps: { width: 500 }
 })
 
 type ItemComponent = {
@@ -662,6 +692,58 @@ onTrainerListResponse(() => {
   tableForm.value.trainerId!.editForm!.component = component
   tableForm.value.trainerId!.searchForm!.component = component
   updateInfoForm.value.formItems.trainerId!.component = component
+  trainerForm.value.formItems.trainerId!.component = component
 })
+
+const trainerDialogShow = ref(false)
+const trainerModel = ref<
+  paths['/admin/sys/user/update/trainer']['post']['requestBody']['content']['application/json']
+>({ id: '', trainerId: '' })
+const trainerUser = ref('')
+const trainerConfirmLoading = ref(false)
+const trainerFormRef = ref<SchemaFormInstance>()
+const trainerForm = ref<
+  SchemaForm<
+    paths['/admin/sys/user/update/trainer']['post']['requestBody']['content']['application/json']
+  >
+>({
+  props: {
+    labelSuffix: '：',
+    labelWidth: '100px',
+    labelPosition: 'left'
+  },
+  formItems: {
+    trainerId: {
+      props: {
+        label: '教练'
+      },
+      component: null as unknown as VNode
+    }
+  }
+})
+const handleTrainer = (
+  user: paths['/admin/sys/user/list']['post']['responses']['200']['content']['application/json'][0]
+) => {
+  trainerDialogShow.value = true
+  trainerUser.value = user.username as string
+  trainerModel.value.id = user.id as string
+  trainerModel.value.trainerId = user.trainer?.id
+}
+const confirmTrainer = async () => {
+  try {
+    trainerConfirmLoading.value = true
+    await trainerFormRef.value?.formRef?.validate()
+    await useFetch('/admin/sys/user/update/trainer', { immediate: false })
+      .post(trainerModel.value)
+      .execute(true)
+    ElMessage.success('教练修改成功')
+    trainerDialogShow.value = false
+    await schemaTableFormRef.value?.handleSearch()
+  } catch (error) {
+    console.error(error)
+  } finally {
+    trainerConfirmLoading.value = false
+  }
+}
 </script>
 <style scoped></style>
