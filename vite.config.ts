@@ -9,7 +9,7 @@ import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import { viteCommonjs } from '@originjs/vite-plugin-commonjs'
 
-const INVALID_CHAR_REGEX = /[\x00-\x1F\x7F<>*#"{}|^[\]`;?:&=+$,]/g
+const INVALID_CHAR_REGEX = /[\x00-\x1F\x7F<>*#"_{}|^[\]`;?:&=+$,]/g
 const DRIVE_LETTER_REGEX = /^[a-z]:/i
 
 // https://vitejs.dev/config/
