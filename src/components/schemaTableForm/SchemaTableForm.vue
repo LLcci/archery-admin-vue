@@ -2,7 +2,11 @@
   <schemaForm ref="searchFormRef" v-model="searchFormModel" :form="searForm">
     <template #default>
       <slot name="searchButtons">
-        <el-button type="primary" v-permissions="props.api.page" @click="handleSearch"
+        <el-button
+          type="primary"
+          v-permissions="props.api.page"
+          :loading="tableLoading"
+          @click="handleSearch"
           >查询</el-button
         >
         <el-button type="default" v-permissions="props.api.page" @click="handleReset"
@@ -390,6 +394,7 @@ const handleEdit = async () => {
  */
 const handleDelete = async (value: FormModel) => {
   try {
+    // @ts-ignore
     tableLoading.value = true
     await tableDelete(props.api.delete, { id: [value.id] }).execute(true)
     emits('onTableDeleteSuccess')
@@ -398,12 +403,14 @@ const handleDelete = async (value: FormModel) => {
   } catch (error) {
     console.error(error)
   } finally {
+    // @ts-ignore
     tableLoading.value = false
   }
 }
 
 const handleMultipleDelete = async (value: FormModel[]) => {
   try {
+    // @ts-ignore
     tableLoading.value = true
     await tableDelete(props.api.delete, { id: value.map((item) => item.id) }).execute(true)
     emits('onTableDeleteSuccess')
@@ -412,6 +419,7 @@ const handleMultipleDelete = async (value: FormModel[]) => {
   } catch (error) {
     console.error(error)
   } finally {
+    // @ts-ignore
     tableLoading.value = false
   }
 }
