@@ -327,6 +327,65 @@ export interface paths {
     /** id删除字典数据 */
     post: operations['DictDataController_deleteDictDataById']
   }
+  '/admin/kuaishou/account/add': {
+    /** 添加广告账户 */
+    post: operations['AccountController_add']
+  }
+  '/admin/kuaishou/account/update': {
+    /** 修改广告账户 */
+    post: operations['AccountController_update']
+  }
+  '/admin/kuaishou/account/info': {
+    /** 获取广告账户信息 */
+    get: operations['AccountController_info']
+  }
+  '/admin/kuaishou/account/page': {
+    /** 获取广告账户分页 */
+    post: operations['AccountController_page']
+  }
+  '/admin/kuaishou/account/delete': {
+    /** 删除广告账户 */
+    post: operations['AccountController_delete']
+  }
+  '/admin/kuaishou/account/list': {
+    get: operations['AccountController_list']
+  }
+  '/admin/kuaishou/account/remark': {
+    post: operations['AccountController_remark']
+  }
+  '/admin/kuaishou/user/add': {
+    /** 添加快手账户 */
+    post: operations['UserController_add']
+  }
+  '/admin/kuaishou/user/update': {
+    /** 修改快手账户 */
+    post: operations['UserController_update']
+  }
+  '/admin/kuaishou/user/info': {
+    /** 获取快手账户信息 */
+    get: operations['UserController_info']
+  }
+  '/admin/kuaishou/user/page': {
+    /** 获取快手账户分页 */
+    post: operations['UserController_page']
+  }
+  '/admin/kuaishou/user/delete': {
+    /** 删除快手账户 */
+    post: operations['UserController_delete']
+  }
+  '/admin/kuaishou/user/list': {
+    /** 获取快手账户列表 */
+    get: operations['UserController_list']
+  }
+  '/admin/kuaishou/report/page': {
+    post: operations['ReportController_page']
+  }
+  '/admin/kuaishou/report/tianyanPage': {
+    post: operations['ReportController_tianyanPage']
+  }
+  '/admin/kuaishou/report/export': {
+    get: operations['ReportController_export']
+  }
 }
 
 export type webhooks = Record<string, never>
@@ -1539,6 +1598,168 @@ export interface components {
       typeId: string
       /** @description 字典类型列表 */
       list: components['schemas']['DictDataEntity'][]
+    }
+    CreateAccountDto: {
+      accountId: string
+      userId: string
+      /** @description 是否显示全站数据;0-隐藏,1-显示 */
+      allStation: number
+      /** @description 全站数据类型;0-全站直播推广,1-全站直播推广(智投版) */
+      allStationType?: number
+      /** @description 0-旧版,1-新版 */
+      version: number
+      /**
+       * @description 是否启用:0-停用,1-启用
+       * @enum {string}
+       */
+      status?: '0' | '1'
+      sort: number
+    }
+    UpdateAccountDto: {
+      id: string
+      accountId: string
+      userId: string
+      /** @description 是否显示全站数据;0-隐藏,1-显示 */
+      allStation: number
+      /** @description 全站数据类型;0-全站直播推广,1-全站直播推广(智投版) */
+      allStationType?: number
+      /** @description 0-旧版,1-新版 */
+      version: number
+      /**
+       * @description 是否启用:0-停用,1-启用
+       * @enum {string}
+       */
+      status?: '0' | '1'
+      sort: number
+    }
+    KuaishouUser: {
+      /** @description id,新增时不需要传,更新时需要传 */
+      id?: string
+      /**
+       * @description 是否启用:0-停用,1-启用
+       * @enum {string}
+       */
+      status?: '0' | '1'
+      /** Format: date-time */
+      createTime?: string
+      /** Format: date-time */
+      updateTime?: string
+      /** @description 创建用户 */
+      createUser?: components['schemas']['UserEntity']
+      /** @description 更新用户 */
+      updateUser?: components['schemas']['UserEntity']
+      /** Format: date-time */
+      deleteTime?: string
+      kuaishouId: string
+      username: string
+      cookies: string
+      tianyanCookies: string
+    }
+    KuaishouAccount: {
+      /** @description id,新增时不需要传,更新时需要传 */
+      id?: string
+      /**
+       * @description 是否启用:0-停用,1-启用
+       * @enum {string}
+       */
+      status?: '0' | '1'
+      /** Format: date-time */
+      createTime?: string
+      /** Format: date-time */
+      updateTime?: string
+      /** @description 创建用户 */
+      createUser?: components['schemas']['UserEntity']
+      /** @description 更新用户 */
+      updateUser?: components['schemas']['UserEntity']
+      /** Format: date-time */
+      deleteTime?: string
+      accountId: string
+      allStation: number
+      allStationType: number
+      sort: number
+      version: number
+      remark: string
+      user: components['schemas']['KuaishouUser']
+    }
+    PageAccountDto: {
+      /**
+       * @description 当前页码
+       * @default 1
+       */
+      currentPage?: number
+      /**
+       * @description 页大小
+       * @default 10
+       */
+      pageSize?: number
+      accountId?: string
+      userId?: string
+      /** @description 是否显示全站数据;0-隐藏,1-显示 */
+      allStation?: number
+      /**
+       * @description 是否启用:0-停用,1-启用
+       * @enum {string}
+       */
+      status?: '0' | '1'
+    }
+    CreateUserDto: {
+      kuaishouId: string
+      username: string
+      cookies: string
+      tianyanCookies: string
+      /**
+       * @description 是否启用:0-停用,1-启用
+       * @enum {string}
+       */
+      status?: '0' | '1'
+    }
+    UpdateUserDto: {
+      id: string
+      kuaishouId: string
+      username: string
+      cookies: string
+      tianyanCookies: string
+      /**
+       * @description 是否启用:0-停用,1-启用
+       * @enum {string}
+       */
+      status?: '0' | '1'
+    }
+    PageUserDto: {
+      /**
+       * @description 当前页码
+       * @default 1
+       */
+      currentPage?: number
+      /**
+       * @description 页大小
+       * @default 10
+       */
+      pageSize?: number
+      kuaishouId?: string
+      username?: string
+      cookies?: string
+      tianyanCookies?: string
+      /**
+       * @description 是否启用:0-停用,1-启用
+       * @enum {string}
+       */
+      status?: '0' | '1'
+    }
+    PageReportDto: {
+      /**
+       * @description 当前页码
+       * @default 1
+       */
+      currentPage?: number
+      /**
+       * @description 页大小
+       * @default 10
+       */
+      pageSize?: number
+      userId?: string
+      beginDate?: string
+      endDate?: string
     }
   }
   responses: never
@@ -3156,6 +3377,246 @@ export interface operations {
         content: {
           'application/json': components['schemas']['DeleteResult']
         }
+      }
+    }
+  }
+  /** 添加广告账户 */
+  AccountController_add: {
+    parameters: {
+      header?: {
+        /** @description Bearer token */
+        Authorization?: string
+      }
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateAccountDto']
+      }
+    }
+    responses: {
+      201: {
+        content: never
+      }
+    }
+  }
+  /** 修改广告账户 */
+  AccountController_update: {
+    parameters: {
+      header?: {
+        /** @description Bearer token */
+        Authorization?: string
+      }
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateAccountDto']
+      }
+    }
+    responses: {
+      201: {
+        content: never
+      }
+    }
+  }
+  /** 获取广告账户信息 */
+  AccountController_info: {
+    parameters: {
+      header?: {
+        /** @description Bearer token */
+        Authorization?: string
+      }
+      path: {
+        id: string
+      }
+    }
+    responses: {
+      /** @description 获取广告账户信息 */
+      200: {
+        content: {
+          'application/json': components['schemas']['KuaishouAccount']
+        }
+      }
+    }
+  }
+  /** 获取广告账户分页 */
+  AccountController_page: {
+    parameters: {
+      header?: {
+        /** @description Bearer token */
+        Authorization?: string
+      }
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PageAccountDto']
+      }
+    }
+    responses: {
+      200: {
+        content: {
+          'application/json': components['schemas']['PageResultDto'] & {
+            records: components['schemas']['KuaishouAccount'][]
+          }
+        }
+      }
+    }
+  }
+  /** 删除广告账户 */
+  AccountController_delete: {
+    parameters: {
+      header?: {
+        /** @description Bearer token */
+        Authorization?: string
+      }
+    }
+    responses: {
+      201: {
+        content: never
+      }
+    }
+  }
+  AccountController_list: {
+    parameters: {
+      query: {
+        userId: string
+      }
+      header?: {
+        /** @description Bearer token */
+        Authorization?: string
+      }
+    }
+    responses: {
+      200: {
+        content: never
+      }
+    }
+  }
+  AccountController_remark: {
+    parameters: {
+      header?: {
+        /** @description Bearer token */
+        Authorization?: string
+      }
+    }
+    responses: {
+      201: {
+        content: never
+      }
+    }
+  }
+  /** 添加快手账户 */
+  UserController_add: {
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateUserDto']
+      }
+    }
+    responses: {
+      201: {
+        content: never
+      }
+    }
+  }
+  /** 修改快手账户 */
+  UserController_update: {
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateUserDto']
+      }
+    }
+    responses: {
+      201: {
+        content: never
+      }
+    }
+  }
+  /** 获取快手账户信息 */
+  UserController_info: {
+    parameters: {
+      path: {
+        id: string
+      }
+    }
+    responses: {
+      /** @description 获取快手账户信息 */
+      200: {
+        content: {
+          'application/json': components['schemas']['KuaishouUser']
+        }
+      }
+    }
+  }
+  /** 获取快手账户分页 */
+  UserController_page: {
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PageUserDto']
+      }
+    }
+    responses: {
+      201: {
+        content: never
+      }
+    }
+  }
+  /** 删除快手账户 */
+  UserController_delete: {
+    responses: {
+      201: {
+        content: never
+      }
+    }
+  }
+  /** 获取快手账户列表 */
+  UserController_list: {
+    responses: {
+      /** @description 获取快手账户列表 */
+      200: {
+        content: {
+          'application/json': components['schemas']['KuaishouUser'][]
+        }
+      }
+    }
+  }
+  ReportController_page: {
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PageReportDto']
+      }
+    }
+    responses: {
+      201: {
+        content: never
+      }
+    }
+  }
+  ReportController_tianyanPage: {
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PageReportDto']
+      }
+    }
+    responses: {
+      201: {
+        content: never
+      }
+    }
+  }
+  ReportController_export: {
+    parameters: {
+      query?: {
+        /** @description 当前页码 */
+        currentPage?: number
+        /** @description 页大小 */
+        pageSize?: number
+        userId?: string
+        beginDate?: string
+        endDate?: string
+      }
+    }
+    responses: {
+      200: {
+        content: never
       }
     }
   }
