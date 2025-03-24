@@ -397,7 +397,7 @@ const tableForm = ref<
       align: 'center',
       formatter(row, column, cellValue) {
         if (cellValue) {
-          return dayjs(cellValue).format('YYYY-MM-DD HH:mm:ss')
+          return dayjs(cellValue).format('YYYY-MM-DD')
         }
         return ''
       }
@@ -446,6 +446,18 @@ const tableForm = ref<
     searchForm: {
       props: {
         label: '教练'
+      }
+    }
+  },
+  createTime: {
+    table: {
+      label: '创建时间',
+      align: 'center',
+      formatter(row, column, cellValue) {
+        if (cellValue) {
+          return dayjs(cellValue).format('YYYY-MM-DD')
+        }
+        return ''
       }
     }
   }
