@@ -45,108 +45,106 @@
     </Form>
     <Spin :spinning="loading">
       <div class="bg-white dark:bg-black mb-16px !pt-24px pr-24px pb-24px pl-24px">
-        <Row style="width: 100" justify="space-around" :gutter="[0, 16]">
-          <Col v-for="(item, index) in tableData" :key="index" :span="22">
-            <Table
-              :columns="getColumns(item)"
-              :data-source="item.accountList"
-              :pagination="false"
-              bordered
-            >
-              <template #bodyCell="{ record, column }">
-                <template v-if="column.dataIndex === 'balance'">
+        <div v-for="(item, index) in tableData" :key="index" class="mt overflow-auto">
+          <Table
+            :columns="getColumns(item)"
+            :data-source="item.accountList"
+            :pagination="false"
+            bordered
+          >
+            <template #bodyCell="{ record, column }">
+              <template v-if="column.dataIndex === 'balance'">
+                <Tag
+                  v-if="
+                    record.accountId != '全站' &&
+                    record.realBudget != 0 &&
+                    record.costTotal >= record.realBudget * 0.9 &&
+                    record.date == dayjs().format('YYYY-MM-DD')
+                  "
+                  color="#f50"
+                  >{{ record.balance }}</Tag
+                >
+                <div v-else>{{ record.balance }}</div>
+              </template>
+              <template v-if="column.dataIndex === 'remark'">
+                <div v-if="record.remark">
                   <Tag
-                    v-if="
-                      record.accountId != '全站' &&
-                      record.realBudget != 0 &&
-                      record.costTotal >= record.realBudget * 0.9 &&
-                      record.date == dayjs().format('YYYY-MM-DD')
-                    "
-                    color="#f50"
-                    >{{ record.balance }}</Tag
+                    v-for="tag in record.remark.split(',')"
+                    :key="tag"
+                    class="mt-8px"
+                    :color="tag.split(':')[0]"
                   >
-                  <div v-else>{{ record.balance }}</div>
-                </template>
-                <template v-if="column.dataIndex === 'remark'">
-                  <div v-if="record.remark">
-                    <Tag
-                      v-for="tag in record.remark.split(',')"
-                      :key="tag"
-                      class="mt-8px"
-                      :color="tag.split(':')[0]"
+                    {{ tag.split(':')[1] }}
+                  </Tag>
+                </div>
+              </template>
+              <template v-if="column.title === '操作'">
+                <Button type="primary" ghost @click="handleEdit(record)">编辑备注</Button>
+              </template>
+            </template>
+            <template #summary>
+              <TableSummaryRow>
+                <TableSummaryCell :style="{ textAlign: 'center' }" :col-span="2"
+                  >合计</TableSummaryCell
+                >
+                <TableSummaryCell :style="{ textAlign: 'center' }">{{
+                  item.total.costTotal
+                }}</TableSummaryCell>
+                <TableSummaryCell :style="{ textAlign: 'center' }">{{
+                  item.total.t0OrderCnt
+                }}</TableSummaryCell>
+                <TableSummaryCell :style="{ textAlign: 'center' }">{{
+                  item.total.t30GMV
+                }}</TableSummaryCell>
+                <TableSummaryCell :style="{ textAlign: 'center' }">{{
+                  item.total.roi == 'NaN' || item.total.roi == 'Infinity' || !item.total.roi
+                    ? 0
+                    : item.total.roi
+                }}</TableSummaryCell>
+                <TableSummaryCell :style="{ textAlign: 'center' }">{{
+                  item.total.merchantRecoFans
+                }}</TableSummaryCell>
+                <TableSummaryCell :style="{ textAlign: 'center' }">{{
+                  item.total.balance
+                }}</TableSummaryCell>
+                <TableSummaryCell :style="{ textAlign: 'center' }"></TableSummaryCell>
+                <TableSummaryCell :style="{ textAlign: 'center' }"></TableSummaryCell>
+              </TableSummaryRow>
+              <TableSummaryRow>
+                <TableSummaryCell :style="{ textAlign: 'center' }" :col-span="2"
+                  >磁力天眼</TableSummaryCell
+                >
+                <TableSummaryCell :style="{ textAlign: 'center' }">
+                  <div style="display: flex; justify-content: space-around; text-align: center">
+                    <div>{{ item.tianyan.cost }}</div>
+                    <Tag v-if="item.tianyan.cost" color="cyan"
+                      >{{ ((item.total.costTotal / item.tianyan.cost) * 100).toFixed(2) }}%</Tag
                     >
-                      {{ tag.split(':')[1] }}
-                    </Tag>
                   </div>
-                </template>
-                <template v-if="column.title === '操作'">
-                  <Button type="primary" ghost @click="handleEdit(record)">编辑备注</Button>
-                </template>
-              </template>
-              <template #summary>
-                <TableSummaryRow>
-                  <TableSummaryCell :style="{ textAlign: 'center' }" :col-span="2"
-                    >合计</TableSummaryCell
-                  >
-                  <TableSummaryCell :style="{ textAlign: 'center' }">{{
-                    item.total.costTotal
-                  }}</TableSummaryCell>
-                  <TableSummaryCell :style="{ textAlign: 'center' }">{{
-                    item.total.t0OrderCnt
-                  }}</TableSummaryCell>
-                  <TableSummaryCell :style="{ textAlign: 'center' }">{{
-                    item.total.t30GMV
-                  }}</TableSummaryCell>
-                  <TableSummaryCell :style="{ textAlign: 'center' }">{{
-                    item.total.roi == 'NaN' || item.total.roi == 'Infinity' || !item.total.roi
-                      ? 0
-                      : item.total.roi
-                  }}</TableSummaryCell>
-                  <TableSummaryCell :style="{ textAlign: 'center' }">{{
-                    item.total.merchantRecoFans
-                  }}</TableSummaryCell>
-                  <TableSummaryCell :style="{ textAlign: 'center' }">{{
-                    item.total.balance
-                  }}</TableSummaryCell>
-                  <TableSummaryCell :style="{ textAlign: 'center' }"></TableSummaryCell>
-                  <TableSummaryCell :style="{ textAlign: 'center' }"></TableSummaryCell>
-                </TableSummaryRow>
-                <TableSummaryRow>
-                  <TableSummaryCell :style="{ textAlign: 'center' }" :col-span="2"
-                    >磁力天眼</TableSummaryCell
-                  >
-                  <TableSummaryCell :style="{ textAlign: 'center' }">
-                    <div style="display: flex; justify-content: space-around; text-align: center">
-                      <div>{{ item.tianyan.cost }}</div>
-                      <Tag v-if="item.tianyan.cost" color="cyan"
-                        >{{ ((item.total.costTotal / item.tianyan.cost) * 100).toFixed(2) }}%</Tag
-                      >
+                </TableSummaryCell>
+                <TableSummaryCell :style="{ textAlign: 'center' }"></TableSummaryCell>
+                <TableSummaryCell :style="{ textAlign: 'center' }"></TableSummaryCell>
+                <TableSummaryCell :style="{ textAlign: 'center' }">
+                  <div style="display: flex; justify-content: space-around; text-align: center">
+                    <div>
+                      {{
+                        item.tianyan.roi == 'NaN' ||
+                        item.tianyan.roi == 'Infinity' ||
+                        !item.tianyan.roi
+                          ? 0
+                          : item.tianyan.roi
+                      }}
                     </div>
-                  </TableSummaryCell>
-                  <TableSummaryCell :style="{ textAlign: 'center' }"></TableSummaryCell>
-                  <TableSummaryCell :style="{ textAlign: 'center' }"></TableSummaryCell>
-                  <TableSummaryCell :style="{ textAlign: 'center' }">
-                    <div style="display: flex; justify-content: space-around; text-align: center">
-                      <div>
-                        {{
-                          item.tianyan.roi == 'NaN' ||
-                          item.tianyan.roi == 'Infinity' ||
-                          !item.tianyan.roi
-                            ? 0
-                            : item.tianyan.roi
-                        }}
-                      </div>
-                    </div>
-                  </TableSummaryCell>
-                  <TableSummaryCell :style="{ textAlign: 'center' }"></TableSummaryCell>
-                  <TableSummaryCell :style="{ textAlign: 'center' }"></TableSummaryCell>
-                  <TableSummaryCell :style="{ textAlign: 'center' }"></TableSummaryCell>
-                  <TableSummaryCell :style="{ textAlign: 'center' }"></TableSummaryCell>
-                </TableSummaryRow>
-              </template>
-            </Table>
-          </Col>
-        </Row>
+                  </div>
+                </TableSummaryCell>
+                <TableSummaryCell :style="{ textAlign: 'center' }"></TableSummaryCell>
+                <TableSummaryCell :style="{ textAlign: 'center' }"></TableSummaryCell>
+                <TableSummaryCell :style="{ textAlign: 'center' }"></TableSummaryCell>
+                <TableSummaryCell :style="{ textAlign: 'center' }"></TableSummaryCell>
+              </TableSummaryRow>
+            </template>
+          </Table>
+        </div>
         <Pagination
           v-model:current="searchForm.page"
           v-model:page-size="searchForm.limit"

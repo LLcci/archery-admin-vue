@@ -38,33 +38,26 @@
     </Form>
     <Spin :spinning="loading">
       <div class="bg-white dark:bg-black mb-16px !pt-24px pr-24px pb-24px pl-24px">
-        <Row style="width: 100" justify="space-around" :gutter="[0, 16]">
-          <Col v-for="(item, index) in tableData" :key="index" :span="22">
-            <Table
-              :columns="getColumns(item)"
-              :data-source="item.list"
-              :pagination="false"
-              bordered
-            >
-              <template #summary>
-                <TableSummaryRow>
-                  <TableSummaryCell :style="{ textAlign: 'center' }" :col-span="2"
-                    >合计</TableSummaryCell
-                  >
-                  <TableSummaryCell :style="{ textAlign: 'center' }">{{
-                    item.total.cost
-                  }}</TableSummaryCell>
-                  <TableSummaryCell :style="{ textAlign: 'center' }">{{
-                    item.total.gmv
-                  }}</TableSummaryCell>
-                  <TableSummaryCell :style="{ textAlign: 'center' }">{{
-                    item.total.roi
-                  }}</TableSummaryCell>
-                </TableSummaryRow>
-              </template>
-            </Table>
-          </Col>
-        </Row>
+        <div v-for="(item, index) in tableData" :key="index" class="mt overflow-auto">
+          <Table :columns="getColumns(item)" :data-source="item.list" :pagination="false" bordered>
+            <template #summary>
+              <TableSummaryRow>
+                <TableSummaryCell :style="{ textAlign: 'center' }" :col-span="2"
+                  >合计</TableSummaryCell
+                >
+                <TableSummaryCell :style="{ textAlign: 'center' }">{{
+                  item.total.cost
+                }}</TableSummaryCell>
+                <TableSummaryCell :style="{ textAlign: 'center' }">{{
+                  item.total.gmv
+                }}</TableSummaryCell>
+                <TableSummaryCell :style="{ textAlign: 'center' }">{{
+                  item.total.roi
+                }}</TableSummaryCell>
+              </TableSummaryRow>
+            </template>
+          </Table>
+        </div>
         <Pagination
           v-model:current="searchForm.page"
           v-model:page-size="searchForm.limit"
