@@ -104,6 +104,14 @@ export interface paths {
     /** 微信支付回调通知 */
     post: operations['PaymentController_notify']
   }
+  '/admin/archery/ad/count': {
+    /** 获取剩余观看次数 */
+    get: operations['AdController_count']
+  }
+  '/admin/archery/ad/watch': {
+    /** 观看广告 */
+    get: operations['AdController_watch']
+  }
   '/admin/sys/user/page': {
     /** 分页用户列表 */
     post: operations['UserController_getUserPageList']
@@ -302,6 +310,10 @@ export interface paths {
   '/admin/sys/dictType/code': {
     /** 根据字典类型编码查询字典类型和数据 */
     get: operations['DictTypeController_getDictTypeByCodeWithData']
+  }
+  '/admin/sys/dictType/all': {
+    /** 查询所有字典类型和数据 */
+    get: operations['DictTypeController_getAllDict']
   }
   '/admin/sys/dictData/page': {
     /** 分页字典数据列表 */
@@ -612,6 +624,8 @@ export interface components {
       oneNum: number
       /** @description M数量 */
       mNum: number
+      /** @description 组总环值数组 */
+      groupTotalArr: number[]
       values: components['schemas']['ScoringValuesEntity'][]
     }
     ScoringPageListDto: {
@@ -994,6 +1008,12 @@ export interface components {
       signType: string
       /** @description paySign */
       paySign: string
+    }
+    WatchDto: {
+      /** @description 剩余观看次数 */
+      remainCount: number
+      /** @description 提示信息 */
+      msg: string
     }
     UserPageListDto: {
       /**
@@ -2272,6 +2292,39 @@ export interface operations {
       }
     }
   }
+  /** 获取剩余观看次数 */
+  AdController_count: {
+    parameters: {
+      header?: {
+        /** @description Bearer token */
+        Authorization?: string
+      }
+    }
+    responses: {
+      /** @description 剩余观看次数 */
+      200: {
+        content: {
+          'application/json': number
+        }
+      }
+    }
+  }
+  /** 观看广告 */
+  AdController_watch: {
+    parameters: {
+      header?: {
+        /** @description Bearer token */
+        Authorization?: string
+      }
+    }
+    responses: {
+      200: {
+        content: {
+          'application/json': components['schemas']['WatchDto']
+        }
+      }
+    }
+  }
   /** 分页用户列表 */
   UserController_getUserPageList: {
     parameters: {
@@ -3254,6 +3307,23 @@ export interface operations {
       }
     }
   }
+  /** 查询所有字典类型和数据 */
+  DictTypeController_getAllDict: {
+    parameters: {
+      header?: {
+        /** @description Bearer token */
+        Authorization?: string
+      }
+    }
+    responses: {
+      /** @description 查询所有字典类型和数据 */
+      200: {
+        content: {
+          'application/json': components['schemas']['DictTypeEntity'][]
+        }
+      }
+    }
+  }
   /** 分页字典数据列表 */
   DictDataController_getDictDataPageList: {
     parameters: {
@@ -3421,12 +3491,12 @@ export interface operations {
   /** 获取广告账户信息 */
   AccountController_info: {
     parameters: {
+      query: {
+        id: string
+      }
       header?: {
         /** @description Bearer token */
         Authorization?: string
-      }
-      path: {
-        id: string
       }
     }
     responses: {
@@ -3533,7 +3603,7 @@ export interface operations {
   /** 获取快手账户信息 */
   UserController_info: {
     parameters: {
-      path: {
+      query: {
         id: string
       }
     }
