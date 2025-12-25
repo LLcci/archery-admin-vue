@@ -25,10 +25,18 @@
                   ></el-input>
                 </el-form-item>
                 <el-form-item prop="code">
-                  <div class="flex items-center">
-                    <el-input v-model="formData.code" placeholder="验证码"></el-input>
-                    <el-image @click="getCode" :src="code?.img" fit="fill" :lazy="true"></el-image>
-                  </div>
+                  <cap-widget
+                    :endpoint="capApi"
+                    :options="{
+                      i18nInitialState: '点击验证',
+                      i18nVerifyingLabel: '验证中...',
+                      i18nSolvedLabel: '验证通过',
+                      i18nErrorLabel: '验证失败，请重试',
+                      onsolve: (e: any) => {
+                        formData.code = e.detail.token
+                      }
+                    }"
+                  ></cap-widget>
                 </el-form-item>
                 <el-form-item>
                   <el-button
@@ -51,12 +59,13 @@
 <script setup lang="ts">
 import { type FormInstance, type FormRules } from 'element-plus'
 import { reactive, ref } from 'vue'
-import { useCode, useLogin } from './api'
+import { useLogin } from './api'
 import type { LoginForm } from './types'
 import { useUser } from '@/stores/useUser'
-import { useSystem } from '@/stores/useSystem'
 import { useRouter } from 'vue-router'
-import { useDict } from '@/stores/useDict'
+import { CapWidget } from '@better-captcha/vue/provider/cap-widget'
+
+const capApi = ref(`${import.meta.env.VITE_API_URL}/admin/sys/login/`)
 
 const router = useRouter()
 
@@ -68,38 +77,31 @@ const formRef = ref<FormInstance>()
 let formData = reactive<LoginForm>({
   username: '',
   password: '',
-  code: '',
-  codeId: ''
+  code: ''
 })
 
 const rules = reactive<FormRules<typeof formData>>({
   username: [{ required: true, message: '请输入用户名' }],
   password: [{ required: true, message: '请输入密码' }],
-  code: [{ required: true, message: '请输入验证码' }]
+  code: [{ required: true, message: '请点击验证' }]
 })
 
-const { data: code, execute: getCode } = useCode()
-getCode()
-
-const {
-  data: loginData,
-  onFetchError: onLoginError,
-  isFetching: loginFetching,
-  execute: goLogin
-} = useLogin(formData)
-onLoginError(() => {
-  getCode(), formRef.value?.resetFields(['code'])
-})
+const { data: loginData, isFetching: loginFetching, execute: goLogin } = useLogin(formData)
 async function onSubmit() {
   try {
     await formRef.value?.validate()
-    formData.codeId = code.value?.id as string
+  } catch (error) {
+    console.error(error)
+    return
+  }
+  try {
     await goLogin(true)
     useUser().setToken(loginData.value?.token as string)
     await useUser().getPermissions()
-    await useDict().initDictMap()
+    // await useDict().initDictMap()
     router.replace('/')
   } catch (error) {
+    formRef.value?.resetFields(['code'])
     console.error(error)
   }
 }
