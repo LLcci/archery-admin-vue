@@ -60,13 +60,16 @@ import type { LoginForm } from './types'
 import { useUser } from '@/stores/useUser'
 import { useRouter } from 'vue-router'
 import { useDict } from '@/stores/useDict'
+import type { CapWidget } from '@/types/Cap'
 
 const capApi = ref(`${import.meta.env.VITE_API_URL}/admin/sys/login/`)
 
-onMounted(() => {
-  const widget = document.querySelector('#cap')
+let capWidgetEl: CapWidget | null = null
 
-  widget?.addEventListener('solve', function (e: any) {
+onMounted(() => {
+  capWidgetEl = document.querySelector('#cap')
+
+  capWidgetEl?.addEventListener('solve', function (e: any) {
     formData.code = e.detail.token
     // handle the token as needed
   })
@@ -106,6 +109,7 @@ async function onSubmit() {
     await useDict().initDictMap()
     router.replace('/')
   } catch (error) {
+    capWidgetEl?.reset()
     formRef.value?.resetFields(['code'])
     console.error(error)
   }
