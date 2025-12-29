@@ -106,6 +106,7 @@ async function onSubmit() {
     await useDict().initDictMap()
     router.replace('/')
   } catch (error) {
+    formRef.value?.resetFields(['code'])
     console.error(error)
   }
 }
