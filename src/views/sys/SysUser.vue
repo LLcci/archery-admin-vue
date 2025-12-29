@@ -33,14 +33,14 @@
         @click="handlePsw(scope.row)"
         >修改密码</el-button
       >
-      <el-button
+      <!-- <el-button
         type="primary"
         v-permissions="`/admin/sys/user/update/trainer`"
         text
         size="default"
         @click="handleTrainer(scope.row)"
         >设置教练</el-button
-      >
+      > -->
       <el-popconfirm title="确定删除？" @confirm="schemaTableFormRef?.handleDelete(scope.row)">
         <template #reference>
           <el-button v-permissions="api.delete" type="danger" text size="default">删除</el-button>
@@ -173,7 +173,7 @@ const editFormModel = ref<
 
 const tableProps = ref<SchemaTableFormInstance['$props']['tableProps']>({
   props: { showOverflowTooltip: true },
-  actionProps: { width: 500 }
+  actionProps: { width: 350 }
 })
 
 type ItemComponent = {
@@ -215,7 +215,7 @@ const passwordComponent: ItemComponent = {
     { min: 8, message: '密码长度不能小于8位' },
     { max: 16, message: '密码长度不能大于16位' },
     {
-      validator: (rule, value, cb) => {
+      validator: (_rule, value, cb) => {
         if (!/\d/.test(value)) {
           cb('密码必须包含数字')
         }
@@ -243,7 +243,7 @@ const emailComponent: ItemComponent = {
   label: '邮箱',
   rule: [
     {
-      validator: (rule, value, cb) => {
+      validator: (_rule, value, cb) => {
         if (!value) {
           cb()
         }
@@ -261,7 +261,7 @@ const phoneComponent: ItemComponent = {
   label: '手机号',
   rule: [
     {
-      validator: (rule, value, cb) => {
+      validator: (_rule, value, cb) => {
         if (!value) {
           cb()
         }
@@ -295,7 +295,7 @@ const tableForm = ref<
   avatar: {
     table: {
       label: avatarComponent.label,
-      formatter(row, column, cellValue) {
+      formatter(_row, _column, cellValue) {
         if (cellValue) {
           return h(ElAvatar, { size: 40, src: `${import.meta.env.VITE_UPLOAD_URL}/${cellValue}` })
         }
@@ -395,7 +395,7 @@ const tableForm = ref<
     table: {
       label: '会员有效期',
       align: 'center',
-      formatter(row, column, cellValue) {
+      formatter(_row, _column, cellValue) {
         if (cellValue) {
           return dayjs(cellValue).format('YYYY-MM-DD')
         }
@@ -407,7 +407,7 @@ const tableForm = ref<
     table: {
       label: isTrainerComponent.label,
       align: 'center',
-      formatter(row, column, cellValue) {
+      formatter(_row, _column, cellValue) {
         if (cellValue) {
           return h(ElTag, { type: 'success' }, { default: () => '是' })
         }
@@ -431,7 +431,7 @@ const tableForm = ref<
     table: {
       label: '教练',
       align: 'center',
-      formatter(row, column, cellValue, index) {
+      formatter(row, _column, _cellValue, _index) {
         if (row.trainer) {
           return row.trainer.realname
         }
@@ -453,7 +453,7 @@ const tableForm = ref<
     table: {
       label: '创建时间',
       align: 'center',
-      formatter(row, column, cellValue) {
+      formatter(_row, _column, cellValue) {
         if (cellValue) {
           return dayjs(cellValue).format('YYYY-MM-DD')
         }
@@ -490,7 +490,7 @@ const updatePswForm = ref<
       confirmPassword: [
         { required: true, message: '请确认密码' },
         {
-          validator: (rule, value, cb) => {
+          validator: (_rule, value, cb) => {
             if (value !== updatePswModel.value.password) {
               cb('两次密码不一致')
             }
@@ -733,14 +733,6 @@ const trainerForm = ref<
     }
   }
 })
-const handleTrainer = (
-  user: paths['/admin/sys/user/list']['post']['responses']['200']['content']['application/json'][0]
-) => {
-  trainerDialogShow.value = true
-  trainerUser.value = user.username as string
-  trainerModel.value.id = user.id as string
-  trainerModel.value.trainerId = user.trainer?.id
-}
 const confirmTrainer = async () => {
   try {
     trainerConfirmLoading.value = true
