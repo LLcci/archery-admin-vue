@@ -26,16 +26,12 @@
                 </el-form-item>
                 <el-form-item prop="code">
                   <cap-widget
-                    :endpoint="capApi"
-                    :options="{
-                      i18nInitialState: '点击验证',
-                      i18nVerifyingLabel: '验证中...',
-                      i18nSolvedLabel: '验证通过',
-                      i18nErrorLabel: '验证失败，请重试',
-                      onsolve: (e: any) => {
-                        formData.code = e.detail.token
-                      }
-                    }"
+                    id="cap"
+                    :data-cap-api-endpoint="capApi"
+                    data-cap-i18n-initial-state="点击验证"
+                    data-cap-i18n-verifying-label="验证中..."
+                    data-cap-i18n-solved-label="验证通过"
+                    data-cap-i18n-error-label="验证失败，请重试"
                   ></cap-widget>
                 </el-form-item>
                 <el-form-item>
@@ -63,9 +59,18 @@ import { useLogin } from './api'
 import type { LoginForm } from './types'
 import { useUser } from '@/stores/useUser'
 import { useRouter } from 'vue-router'
-import { CapWidget } from '@better-captcha/vue/provider/cap-widget'
+import { useDict } from '@/stores/useDict'
 
 const capApi = ref(`${import.meta.env.VITE_API_URL}/admin/sys/login/`)
+
+onMounted(() => {
+  const widget = document.querySelector('#cap')
+
+  widget?.addEventListener('solve', function (e: any) {
+    formData.code = e.detail.token
+    // handle the token as needed
+  })
+})
 
 const router = useRouter()
 
@@ -98,7 +103,7 @@ async function onSubmit() {
     await goLogin(true)
     useUser().setToken(loginData.value?.token as string)
     await useUser().getPermissions()
-    // await useDict().initDictMap()
+    await useDict().initDictMap()
     router.replace('/')
   } catch (error) {
     formRef.value?.resetFields(['code'])

@@ -11,9 +11,6 @@ importers:
       '@ant-design/icons-vue':
         specifier: ^7.0.1
         version: 7.0.1(vue@3.5.26(typescript@5.9.3))
-      '@better-captcha/vue':
-        specifier: ^0.4.0
-        version: 0.4.0(typescript@5.9.3)(vue@3.5.26(typescript@5.9.3))
       '@element-plus/icons-vue':
         specifier: ^2.3.1
         version: 2.3.2(vue@3.5.26(typescript@5.9.3))
@@ -315,17 +312,6 @@ packages:
   '@babel/types@7.28.5':
     resolution: {integrity: sha512-qQ5m48eI/MFLQ5PxQj4PFaprjyCTLI37ElWMmNs0K8Lk3dVeOdNpB3ks8jc7yM5CDmVC73eMVk/trk3fgmrUpA==}
     engines: {node: '>=6.9.0'}
-
-  '@better-captcha/core@0.4.0':
-    resolution: {integrity: sha512-UiImDbwc+wemUkkdI/mokUTXfjrtCukOpOMVpdgZ7SzfcZ4eRZNKnIQXrjgLVEV8nNAAXtIJHy1YwCUL+di/fQ==}
-    peerDependencies:
-      typescript: ^5.0.0
-
-  '@better-captcha/vue@0.4.0':
-    resolution: {integrity: sha512-xuCj1N/DXWw3lhTAj/N2Ivg1vWdoQrooEfDlgbQy8fndGpBzG871QKdhayS3VsGeSDu1UYJU0zh0wM6FPPzSMg==}
-    peerDependencies:
-      typescript: ^5.0.0
-      vue: ^3.3.0
 
   '@commitlint/cli@19.8.1':
     resolution: {integrity: sha512-LXUdNIkspyxrlV6VDHWBmCZRtkEVRpBKxi2Gtw3J54cGWhLCTouVD/Q6ZSaSvd2YaDObWK8mDjrz3TIKtaQMAA==}
@@ -3117,16 +3103,6 @@ snapshots:
     dependencies:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.28.5
-
-  '@better-captcha/core@0.4.0(typescript@5.9.3)':
-    dependencies:
-      typescript: 5.9.3
-
-  '@better-captcha/vue@0.4.0(typescript@5.9.3)(vue@3.5.26(typescript@5.9.3))':
-    dependencies:
-      '@better-captcha/core': 0.4.0(typescript@5.9.3)
-      typescript: 5.9.3
-      vue: 3.5.26(typescript@5.9.3)
 
   '@commitlint/cli@19.8.1(@types/node@18.19.130)(typescript@5.9.3)':
     dependencies:
