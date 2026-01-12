@@ -196,7 +196,6 @@ import { useUser } from '@/stores/useUser'
 import schemaForm from '../schemaForm/SchemaForm.vue'
 import type SchemaForm from '../schemaForm/types'
 import FormAvatarUpload from '@/components/formAvatarUpload/FormAvatarUpload.vue'
-import { useImgDelete } from '@/views/sys/api/user'
 import type { SchemaFormInstance } from '../schemaForm/types'
 import type { paths } from '@/types/Schema'
 import { omit } from 'lodash'
@@ -221,7 +220,7 @@ let isCollapse = ref(false)
 if (['sm', 'md'].includes(useSystem().breakpoints)) {
   isCollapse.value = true
 }
-useSystem().$subscribe((mutation, state) => {
+useSystem().$subscribe((_mutation, state) => {
   isCollapse.value = false
   if (['sm', 'md'].includes(state.breakpoints)) {
     isCollapse.value = true
@@ -357,7 +356,7 @@ const userInfoForm = ref<SchemaForm<typeof userInfoFormModel.value>>({
         label: '邮箱',
         rules: [
           {
-            validator: (rule, value, cb) => {
+            validator: (_rule, value, cb) => {
               if (!value) {
                 cb()
               }
@@ -376,7 +375,7 @@ const userInfoForm = ref<SchemaForm<typeof userInfoFormModel.value>>({
         label: '手机号',
         rules: [
           {
-            validator: (rule, value, cb) => {
+            validator: (_rule, value, cb) => {
               if (!value) {
                 cb()
               }
@@ -445,7 +444,7 @@ const updatePasswordForm = ref<
           { min: 8, message: '密码长度不能小于8位' },
           { max: 16, message: '密码长度不能大于16位' },
           {
-            validator: (rule, value, cb) => {
+            validator: (_rule, value, cb) => {
               if (!/\d/.test(value)) {
                 cb('密码必须包含数字')
               }
@@ -476,7 +475,7 @@ const updatePasswordForm = ref<
         rules: [
           { required: true, message: '请确认密码' },
           {
-            validator: (rule, value, cb) => {
+            validator: (_rule, value, cb) => {
               if (value !== updatePasswordFormModel.value.newPassword) {
                 cb('两次密码不一致')
               }
