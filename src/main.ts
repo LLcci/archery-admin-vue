@@ -23,7 +23,6 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import { permissions } from './hooks/useDirectives'
 
 import { useUser } from './stores/useUser'
-import { useDict } from './stores/useDict'
 
 const app = createApp(App)
 
@@ -44,11 +43,6 @@ app.use(pinia)
 useUser().initToken()
 
 app.use(router)
-
-if (useUser().token) {
-  useUser().getPermissions()
-  useDict().initDictMap()
-}
 
 app.directive('permissions', permissions)
 

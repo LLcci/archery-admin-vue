@@ -36,7 +36,7 @@
                     type="primary"
                     size="large"
                     @click="onSubmit"
-                    :loading="loginFetching"
+                    :loading="loginLoading"
                     >登录</el-button
                   >
                 </el-form-item>
@@ -54,7 +54,6 @@ import { reactive, ref } from 'vue'
 import { useCode, useLogin } from './api'
 import type { LoginForm } from './types'
 import { useUser } from '@/stores/useUser'
-import { useSystem } from '@/stores/useSystem'
 import { useRouter } from 'vue-router'
 import { useDict } from '@/stores/useDict'
 
@@ -81,16 +80,13 @@ const rules = reactive<FormRules<typeof formData>>({
 const { data: code, execute: getCode } = useCode()
 getCode()
 
-const {
-  data: loginData,
-  onFetchError: onLoginError,
-  isFetching: loginFetching,
-  execute: goLogin
-} = useLogin(formData)
+const { data: loginData, onFetchError: onLoginError, execute: goLogin } = useLogin(formData)
 onLoginError(() => {
-  getCode(), formRef.value?.resetFields(['code'])
+  ;(getCode(), formRef.value?.resetFields(['code']))
 })
+const loginLoading = ref(false)
 async function onSubmit() {
+  loginLoading.value = true
   try {
     await formRef.value?.validate()
     formData.codeId = code.value?.id as string
@@ -101,6 +97,8 @@ async function onSubmit() {
     router.replace('/')
   } catch (error) {
     console.error(error)
+  } finally {
+    loginLoading.value = false
   }
 }
 </script>
