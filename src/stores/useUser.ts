@@ -25,7 +25,7 @@ export const useUser = defineStore(
     initToken: () => void
     setToken: (value: string) => void
     delToken: () => void
-    getPermissions: () => Promise<void>
+    getPermissions: (targetPath?: string) => Promise<void>
     updateUserInfo: (
       info: paths['/admin/sys/permission/userInfo']['post']['requestBody']['content']['application/json']
     ) => UseFetchReturn<
@@ -73,7 +73,7 @@ export const useUser = defineStore(
       token.value = null
     }
 
-    async function getPermissions() {
+    async function getPermissions(targetPath?: string) {
       userRoutes.value = []
       userKeepAliveRoutes.value = []
       userMenuTree.value = []
@@ -126,7 +126,7 @@ export const useUser = defineStore(
         userRoutes.value = uniqBy(userRoutes.value, 'path')
         userRoutes.value.forEach((route) => {
           router.addRoute('main', route)
-          if (router.currentRoute.value.path == route.path) {
+          if (targetPath === route.path) {
             router.replace(route.path)
           }
         })

@@ -45,12 +45,10 @@ router.beforeEach(async (to, from, next) => {
   if (to.path != '/login' && !useUser().token) {
     return next({ path: '/login', replace: true })
   }
-
   // 刷新或首次进入时加载权限和字典（登录页已自行加载，此处通过 userRoutes 判空避免重复）
   if (useUser().token && useUser().userRoutes.length === 0) {
-    await Promise.all([useUser().getPermissions(), useDict().initDictMap()])
+    await Promise.all([useUser().getPermissions(to.path), useDict().initDictMap()])
   }
-
   next()
 })
 
